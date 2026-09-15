@@ -424,6 +424,15 @@
 
         @media (max-width: 768px) {
 
+            .photo-section {
+
+                padding: 20px;
+
+                margin-bottom: 20px;
+
+            }
+
+
             .photo-section-header {
 
                 align-items: flex-start;
@@ -448,6 +457,85 @@
 
             }
 
+
+            .upload-row {
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+
+            .upload-row input[type="file"] {
+
+                width: 100%;
+
+                min-width: 0;
+
+                margin-bottom: 0;
+
+            }
+
+
+            .upload-button {
+
+                width: 100%;
+
+                min-height: 44px;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .photo-section {
+
+                padding: 16px;
+
+                border-radius: 12px;
+
+            }
+
+
+            .upload-box {
+
+                padding: 15px;
+
+            }
+
+
+            .upload-box h3 {
+
+                font-size: 1rem;
+
+                line-height: 1.5;
+
+            }
+
+
+            .photo-preview {
+
+                height: 200px;
+
+            }
+
+
+            .photo-actions button {
+
+                min-height: 44px;
+
+            }
+
+
+            .status-message {
+
+                padding: 12px 14px;
+
+            }
+
         }
 
     </style>
@@ -462,11 +550,26 @@
     <!-- 側邊欄 -->
     <!-- ============================= -->
 
-    <aside class="sidebar">
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
 
         <h2>
             中智佛學社
         </h2>
+
+
+        <!-- 手機版選單按鈕 -->
+
+        <button
+            type="button"
+            class="mobile-menu-btn"
+            id="mobileMenuBtn"
+            aria-expanded="false"
+        >
+            ☰ 管理選單
+        </button>
 
 
         <ul>
@@ -534,7 +637,6 @@
     </aside>
 
 
-
     <!-- ============================= -->
     <!-- 主內容 -->
     <!-- ============================= -->
@@ -555,7 +657,6 @@
             id="statusMessage"
             class="status-message"
         ></div>
-
 
 
         <!-- ========================= -->
@@ -579,7 +680,6 @@
                 </span>
 
             </div>
-
 
 
             <div class="upload-box">
@@ -611,7 +711,6 @@
             </div>
 
 
-
             <div
                 id="featuredList"
                 class="photo-grid"
@@ -625,7 +724,6 @@
 
 
         </section>
-
 
 
         <!-- ========================= -->
@@ -649,7 +747,6 @@
                 </span>
 
             </div>
-
 
 
             <div class="upload-box">
@@ -681,7 +778,6 @@
             </div>
 
 
-
             <div
                 id="galleryList"
                 class="photo-grid"
@@ -700,7 +796,6 @@
     </main>
 
 
-
     <!-- ============================= -->
     <!-- JavaScript -->
     <!-- ============================= -->
@@ -709,6 +804,57 @@
         type="module"
         src="activity.js?v=1"
     ></script>
+
+
+    <!-- ============================= -->
+    <!-- 手機版管理選單 -->
+    <!-- ============================= -->
+
+    <script>
+
+        const sidebar =
+            document.getElementById(
+                "sidebar"
+            );
+
+
+        const mobileMenuBtn =
+            document.getElementById(
+                "mobileMenuBtn"
+            );
+
+
+        mobileMenuBtn.addEventListener(
+            "click",
+            function(){
+
+                const isOpen =
+                    sidebar.classList.toggle(
+                        "menu-open"
+                    );
+
+
+                mobileMenuBtn.setAttribute(
+                    "aria-expanded",
+                    isOpen
+                    ?
+                    "true"
+                    :
+                    "false"
+                );
+
+
+                mobileMenuBtn.textContent =
+                    isOpen
+                    ?
+                    "✕ 關閉選單"
+                    :
+                    "☰ 管理選單";
+
+            }
+        );
+
+    </script>
 
 
 </body>
