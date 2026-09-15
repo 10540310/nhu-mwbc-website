@@ -3,143 +3,524 @@ console.log(
 );
 
 
-
 /* ========================================
-   活動圖片輪播
+   活動圖片資料
 ======================================== */
 
-const slides =
-    document.querySelectorAll(
-        ".slide"
+async function loadPhotoData(){
+
+    console.log(
+        "開始載入活動圖片資料..."
     );
 
-const nextBtn =
-    document.querySelector(
-        ".next"
-    );
+    try{
 
-const prevBtn =
-    document.querySelector(
-        ".prev"
-    );
+        const response =
+            await fetch(
+                "assets/photos.json?v=" +
+                Date.now()
+            );
 
-let currentSlide = 0;
+        if(!response.ok){
+
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        const featured =
+            Array.isArray(
+                data.featured
+            )
+            ?
+            data.featured
+            :
+            [];
+
+        const gallery =
+            Array.isArray(
+                data.gallery
+            )
+            ?
+            data.gallery
+            :
+            [];
+
+        renderFeaturedPhotos(
+            featured
+        );
+
+        renderGalleryPhotos(
+            gallery
+        );
+
+        console.log(
+            "✅ 活動圖片資料載入完成"
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "❌ 活動圖片資料載入失敗：",
+            error
+        );
+
+        /*
+            JSON 載入失敗時，
+            保留 index.html 原本的
+            slide1～slide4 輪播。
+        */
+
+        initializeSlider();
+
+        const gallery =
+            document.getElementById(
+                "activityGallery"
+            );
+
+        if(gallery){
+
+            gallery.innerHTML =
+            `
+            <p>
+                活動照片載入失敗
+            </p>
+            `;
+
+        }
+
+    }
+
+}
 
 
+/* ========================================
+   顯示活動精選
+======================================== */
 
-function showSlide(index){
+function renderFeaturedPhotos(photos){
 
-    if(slides.length === 0){
+    const slider =
+        document.querySelector(
+            ".slider"
+        );
+
+    if(!slider){
 
         return;
 
     }
 
-    slides.forEach(
-        slide => {
+    /*
+        保留左右切換按鈕。
+    */
 
-            slide.classList.remove(
-                "active"
+    const prevBtn =
+        slider.querySelector(
+            ".prev"
+        );
+
+    const nextBtn =
+        slider.querySelector(
+            ".next"
+        );
+
+
+    /*
+        移除原本 HTML 裡的 slide，
+        再依 photos.json 重新建立。
+    */
+
+    slider
+        .querySelectorAll(
+            ".slide"
+        )
+        .forEach(
+            slide => {
+
+                slide.remove();
+
+            }
+        );
+
+
+    const validPhotos =
+        photos.filter(
+            photo => {
+
+                return (
+                    typeof photo === "string" &&
+                    photo.trim() !== ""
+                );
+
+            }
+        );
+
+
+    if(validPhotos.length === 0){
+
+        /*
+            沒有活動精選時，
+            隱藏左右按鈕。
+        */
+
+        if(prevBtn){
+
+            prevBtn.style.display =
+                "none";
+
+        }
+
+        if(nextBtn){
+
+            nextBtn.style.display =
+                "none";
+
+        }
+
+        return;
+
+    }
+
+
+    validPhotos.forEach(
+        (photo,index) => {
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+            image.src =
+                "assets/" +
+                photo.trim();
+
+            image.className =
+                index === 0
+                ?
+                "slide active"
+                :
+                "slide";
+
+            image.alt =
+                "活動精選" +
+                (index + 1);
+
+
+            /*
+                圖片要放在左右按鈕前面。
+            */
+
+            if(prevBtn){
+
+                slider.insertBefore(
+                    image,
+                    prevBtn
+                );
+
+            }
+            else{
+
+                slider.appendChild(
+                    image
+                );
+
+            }
+
+        }
+    );
+
+
+    initializeSlider();
+
+}
+
+
+/* ========================================
+   活動精選輪播
+======================================== */
+
+let sliderTimer = null;
+
+
+function initializeSlider(){
+
+    const slides =
+        document.querySelectorAll(
+            ".slide"
+        );
+
+    const nextBtn =
+        document.querySelector(
+            ".next"
+        );
+
+    const prevBtn =
+        document.querySelector(
+            ".prev"
+        );
+
+    let currentSlide =
+        0;
+
+
+    if(sliderTimer){
+
+        clearInterval(
+            sliderTimer
+        );
+
+        sliderTimer =
+            null;
+
+    }
+
+
+    if(slides.length === 0){
+
+        if(prevBtn){
+
+            prevBtn.style.display =
+                "none";
+
+        }
+
+        if(nextBtn){
+
+            nextBtn.style.display =
+                "none";
+
+        }
+
+        return;
+
+    }
+
+
+    if(prevBtn){
+
+        prevBtn.style.display =
+            "";
+
+    }
+
+    if(nextBtn){
+
+        nextBtn.style.display =
+            "";
+
+    }
+
+
+    function showSlide(index){
+
+        slides.forEach(
+            slide => {
+
+                slide.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+        slides[index].classList.add(
+            "active"
+        );
+
+    }
+
+
+    function nextSlide(){
+
+        currentSlide++;
+
+        if(
+            currentSlide >=
+            slides.length
+        ){
+
+            currentSlide =
+                0;
+
+        }
+
+        showSlide(
+            currentSlide
+        );
+
+    }
+
+
+    function prevSlide(){
+
+        currentSlide--;
+
+        if(currentSlide < 0){
+
+            currentSlide =
+                slides.length - 1;
+
+        }
+
+        showSlide(
+            currentSlide
+        );
+
+    }
+
+
+    /*
+        用 onclick，
+        避免重新初始化時重複綁定事件。
+    */
+
+    if(nextBtn){
+
+        nextBtn.onclick =
+            nextSlide;
+
+    }
+
+
+    if(prevBtn){
+
+        prevBtn.onclick =
+            prevSlide;
+
+    }
+
+
+    showSlide(
+        0
+    );
+
+
+    if(slides.length > 1){
+
+        sliderTimer =
+            setInterval(
+                nextSlide,
+                5000
+            );
+
+    }
+
+}
+
+
+/* ========================================
+   顯示活動照片
+======================================== */
+
+function renderGalleryPhotos(photos){
+
+    const gallery =
+        document.getElementById(
+            "activityGallery"
+        );
+
+    if(!gallery){
+
+        return;
+
+    }
+
+
+    gallery.innerHTML =
+        "";
+
+
+    const validPhotos =
+        photos.filter(
+            photo => {
+
+                return (
+                    typeof photo === "string" &&
+                    photo.trim() !== ""
+                );
+
+            }
+        );
+
+
+    if(validPhotos.length === 0){
+
+        gallery.innerHTML =
+        `
+        <p>
+            目前尚無活動照片
+        </p>
+        `;
+
+        return;
+
+    }
+
+
+    validPhotos.forEach(
+        (photo,index) => {
+
+            const fileName =
+                photo.trim();
+
+
+            const imagePath =
+                "assets/" +
+                fileName;
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href =
+                imagePath;
+
+
+            link.setAttribute(
+                "data-lightbox",
+                "gallery"
+            );
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                imagePath;
+
+
+            image.alt =
+                "活動照片" +
+                (index + 1);
+
+
+            link.appendChild(
+                image
+            );
+
+
+            gallery.appendChild(
+                link
             );
 
         }
     );
 
-    slides[index].classList.add(
-        "active"
-    );
-
 }
-
-
-
-function nextSlide(){
-
-    if(slides.length === 0){
-
-        return;
-
-    }
-
-    currentSlide++;
-
-    if(
-        currentSlide >=
-        slides.length
-    ){
-
-        currentSlide = 0;
-
-    }
-
-    showSlide(
-        currentSlide
-    );
-
-}
-
-
-
-function prevSlide(){
-
-    if(slides.length === 0){
-
-        return;
-
-    }
-
-    currentSlide--;
-
-    if(currentSlide < 0){
-
-        currentSlide =
-            slides.length - 1;
-
-    }
-
-    showSlide(
-        currentSlide
-    );
-
-}
-
-
-
-if(nextBtn){
-
-    nextBtn.addEventListener(
-        "click",
-        nextSlide
-    );
-
-}
-
-
-
-if(prevBtn){
-
-    prevBtn.addEventListener(
-        "click",
-        prevSlide
-    );
-
-}
-
-
-
-if(slides.length > 0){
-
-    showSlide(0);
-
-    setInterval(
-        nextSlide,
-        5000
-    );
-
-}
-
-
-
 
 
 /* ========================================
@@ -150,13 +531,11 @@ const firestoreURL =
     "https://firestore.googleapis.com/v1/projects/nhumwbc/databases/default/documents/news/news";
 
 
-
 async function loadNews(){
 
     console.log(
         "開始載入最新消息..."
     );
-
 
 
     try{
@@ -165,7 +544,6 @@ async function loadNews(){
             await fetch(
                 firestoreURL
             );
-
 
 
         if(response.status === 404){
@@ -179,7 +557,6 @@ async function loadNews(){
         }
 
 
-
         if(response.status === 403){
 
             console.error(
@@ -191,11 +568,11 @@ async function loadNews(){
         }
 
 
-
         if(!response.ok){
 
             const errorText =
                 await response.text();
+
 
             throw new Error(
                 response.status +
@@ -206,15 +583,12 @@ async function loadNews(){
         }
 
 
-
         const documentData =
             await response.json();
 
 
-
         const fields =
             documentData.fields || {};
-
 
 
         function getString(name){
@@ -228,9 +602,6 @@ async function loadNews(){
         }
 
 
-
-
-
         /* ================================
            課程表標題
         ================================ */
@@ -241,12 +612,10 @@ async function loadNews(){
             );
 
 
-
         const courseTableTitle =
             getString(
                 "courseTableTitle"
             );
-
 
 
         if(courseTableTitleDisplay){
@@ -259,9 +628,6 @@ async function loadNews(){
         }
 
 
-
-
-
         /* ================================
            歡迎公告
         ================================ */
@@ -272,14 +638,12 @@ async function loadNews(){
             );
 
 
-
         if(welcomeContent){
 
             const content =
                 getString(
                     "welcomeContent"
                 );
-
 
 
             if(content){
@@ -292,9 +656,6 @@ async function loadNews(){
         }
 
 
-
-
-
         /* ================================
            日期
         ================================ */
@@ -303,7 +664,6 @@ async function loadNews(){
             document.getElementById(
                 "welcomeDates"
             );
-
 
 
         if(welcomeDates){
@@ -324,9 +684,7 @@ async function loadNews(){
                 );
 
 
-
             const dates = [];
-
 
 
             if(pretest){
@@ -339,7 +697,6 @@ async function loadNews(){
             }
 
 
-
             if(posttest){
 
                 dates.push(
@@ -350,7 +707,6 @@ async function loadNews(){
             }
 
 
-
             if(club){
 
                 dates.push(
@@ -359,7 +715,6 @@ async function loadNews(){
                 );
 
             }
-
 
 
             if(dates.length > 0){
@@ -380,9 +735,6 @@ async function loadNews(){
         }
 
 
-
-
-
         /* ================================
            社課資訊
         ================================ */
@@ -393,12 +745,10 @@ async function loadNews(){
             );
 
 
-
         const title =
             getString(
                 "courseTitle"
             );
-
 
 
         if(
@@ -412,21 +762,16 @@ async function loadNews(){
         }
 
 
-
-
-
         const courseTopic =
             document.getElementById(
                 "courseTopic"
             );
 
 
-
         const topic =
             getString(
                 "courseTopic"
             );
-
 
 
         if(
@@ -440,21 +785,16 @@ async function loadNews(){
         }
 
 
-
-
-
         const courseDeadline =
             document.getElementById(
                 "courseDeadline"
             );
 
 
-
         const deadline =
             getString(
                 "deadline"
             );
-
 
 
         if(courseDeadline){
@@ -479,21 +819,16 @@ async function loadNews(){
         }
 
 
-
-
-
         const courseLink =
             document.getElementById(
                 "courseLink"
             );
 
 
-
         const link =
             getString(
                 "link"
             );
-
 
 
         if(courseLink){
@@ -517,21 +852,16 @@ async function loadNews(){
         }
 
 
-
-
-
         const courseNotice =
             document.getElementById(
                 "courseNotice"
             );
 
 
-
         const notice =
             getString(
                 "courseNotice"
             );
-
 
 
         if(
@@ -545,9 +875,6 @@ async function loadNews(){
         }
 
 
-
-
-
         /* ================================
            活動預告
         ================================ */
@@ -558,19 +885,16 @@ async function loadNews(){
             );
 
 
-
         const eventName =
             getString(
                 "eventName"
             );
 
 
-
         const eventDate =
             getString(
                 "eventDate"
             );
-
 
 
         if(eventTitle){
@@ -602,21 +926,16 @@ async function loadNews(){
         }
 
 
-
-
-
         const eventDescription =
             document.getElementById(
                 "eventDescription"
             );
 
 
-
         const description =
             getString(
                 "eventDescription"
             );
-
 
 
         if(
@@ -628,7 +947,6 @@ async function loadNews(){
                 description;
 
         }
-
 
 
         console.log(
@@ -646,9 +964,6 @@ async function loadNews(){
     }
 
 }
-
-
-
 
 
 /* ========================================
@@ -681,9 +996,6 @@ const firebaseConfig = {
 };
 
 
-
-
-
 async function getFirebaseModules(){
 
     const firebaseAppModule =
@@ -692,12 +1004,10 @@ async function getFirebaseModules(){
         );
 
 
-
     const firestoreModule =
         await import(
             "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js"
         );
-
 
 
     const {
@@ -706,7 +1016,6 @@ async function getFirebaseModules(){
         getApp
     } =
         firebaseAppModule;
-
 
 
     const {
@@ -719,7 +1028,6 @@ async function getFirebaseModules(){
         firestoreModule;
 
 
-
     const app =
         getApps().length > 0
         ?
@@ -730,13 +1038,11 @@ async function getFirebaseModules(){
         );
 
 
-
     const db =
         getFirestore(
             app,
             "default"
         );
-
 
 
     return {
@@ -752,9 +1058,6 @@ async function getFirebaseModules(){
 }
 
 
-
-
-
 /* ========================================
    Firestore 網站設定
 ======================================== */
@@ -764,7 +1067,6 @@ async function loadSettings(){
     console.log(
         "開始載入網站設定..."
     );
-
 
 
     try{
@@ -777,13 +1079,6 @@ async function loadSettings(){
             await getFirebaseModules();
 
 
-
-        /*
-            讀取：
-
-            settings/site
-        */
-
         const snapshot =
             await getDoc(
                 doc(
@@ -793,12 +1088,6 @@ async function loadSettings(){
                 )
             );
 
-
-
-        /*
-            如果後台還沒有建立設定，
-            就保留 index.html 原本的文字。
-        */
 
         if(!snapshot.exists()){
 
@@ -811,15 +1100,9 @@ async function loadSettings(){
         }
 
 
-
         const data =
             snapshot.data();
 
-
-
-        /* ================================
-           首頁副標題
-        ================================ */
 
         const heroSubtitle =
             document.getElementById(
@@ -838,11 +1121,6 @@ async function loadSettings(){
         }
 
 
-
-        /* ================================
-           首頁簡介
-        ================================ */
-
         const heroDescription =
             document.getElementById(
                 "heroDescription"
@@ -859,11 +1137,6 @@ async function loadSettings(){
 
         }
 
-
-
-        /* ================================
-           社課時間
-        ================================ */
 
         const clubTimeDisplay =
             document.getElementById(
@@ -883,11 +1156,6 @@ async function loadSettings(){
         }
 
 
-
-        /* ================================
-           社課地點
-        ================================ */
-
         const clubLocationDisplay =
             document.getElementById(
                 "clubLocationDisplay"
@@ -906,11 +1174,6 @@ async function loadSettings(){
         }
 
 
-
-        /* ================================
-           Instagram
-        ================================ */
-
         const instagramLink =
             document.getElementById(
                 "instagramLink"
@@ -928,11 +1191,6 @@ async function loadSettings(){
         }
 
 
-
-        /* ================================
-           LINE
-        ================================ */
-
         const lineLink =
             document.getElementById(
                 "lineLink"
@@ -949,11 +1207,6 @@ async function loadSettings(){
 
         }
 
-
-
-        /* ================================
-           Email
-        ================================ */
 
         const emailLink =
             document.getElementById(
@@ -978,18 +1231,12 @@ async function loadSettings(){
         }
 
 
-
         console.log(
             "✅ 網站設定載入完成"
         );
 
     }
     catch(error){
-
-        /*
-            網站設定失敗時，
-            不影響其他首頁功能。
-        */
 
         console.error(
             "❌ 網站設定載入失敗：",
@@ -999,9 +1246,6 @@ async function loadSettings(){
     }
 
 }
-
-
-
 
 
 /* ========================================
@@ -1015,12 +1259,10 @@ async function loadCourses(){
     );
 
 
-
     const courseTableBody =
         document.getElementById(
             "courseTableBody"
         );
-
 
 
     if(!courseTableBody){
@@ -1028,7 +1270,6 @@ async function loadCourses(){
         return;
 
     }
-
 
 
     try{
@@ -1041,7 +1282,6 @@ async function loadCourses(){
             await getFirebaseModules();
 
 
-
         const snapshot =
             await getDocs(
                 collection(
@@ -1051,9 +1291,7 @@ async function loadCourses(){
             );
 
 
-
         const courses = [];
-
 
 
         snapshot.forEach(
@@ -1070,7 +1308,6 @@ async function loadCourses(){
 
             }
         );
-
 
 
         courses.sort(
@@ -1090,11 +1327,9 @@ async function loadCourses(){
         );
 
 
-
         renderCourses(
             courses
         );
-
 
 
         console.log(
@@ -1108,7 +1343,6 @@ async function loadCourses(){
             "❌ 課程表載入失敗：",
             error
         );
-
 
 
         courseTableBody.innerHTML =
@@ -1125,9 +1359,6 @@ async function loadCourses(){
 }
 
 
-
-
-
 /* ========================================
    顯示課程表
 ======================================== */
@@ -1140,7 +1371,6 @@ function renderCourses(courses){
         );
 
 
-
     if(!courseTableBody){
 
         return;
@@ -1148,10 +1378,8 @@ function renderCourses(courses){
     }
 
 
-
     courseTableBody.innerHTML =
         "";
-
 
 
     if(courses.length === 0){
@@ -1162,22 +1390,18 @@ function renderCourses(courses){
             );
 
 
-
         const cell =
             document.createElement(
                 "td"
             );
 
 
-
         cell.colSpan =
             2;
 
 
-
         cell.textContent =
             "目前尚無課程資料";
-
 
 
         row.appendChild(
@@ -1185,17 +1409,14 @@ function renderCourses(courses){
         );
 
 
-
         courseTableBody.appendChild(
             row
         );
 
 
-
         return;
 
     }
-
 
 
     courses.forEach(
@@ -1207,17 +1428,14 @@ function renderCourses(courses){
                 );
 
 
-
             const dateCell =
                 document.createElement(
                     "td"
                 );
 
 
-
             dateCell.textContent =
                 course.date || "";
-
 
 
             const nameCell =
@@ -1226,10 +1444,8 @@ function renderCourses(courses){
                 );
 
 
-
             nameCell.textContent =
                 course.name || "";
-
 
 
             row.appendChild(
@@ -1237,11 +1453,9 @@ function renderCourses(courses){
             );
 
 
-
             row.appendChild(
                 nameCell
             );
-
 
 
             courseTableBody.appendChild(
@@ -1252,9 +1466,6 @@ function renderCourses(courses){
     );
 
 }
-
-
-
 
 
 /* ========================================
@@ -1268,12 +1479,10 @@ async function loadFAQs(){
     );
 
 
-
     const faqList =
         document.getElementById(
             "faqList"
         );
-
 
 
     if(!faqList){
@@ -1281,7 +1490,6 @@ async function loadFAQs(){
         return;
 
     }
-
 
 
     try{
@@ -1294,7 +1502,6 @@ async function loadFAQs(){
             await getFirebaseModules();
 
 
-
         const snapshot =
             await getDocs(
                 collection(
@@ -1304,9 +1511,7 @@ async function loadFAQs(){
             );
 
 
-
         const faqs = [];
-
 
 
         snapshot.forEach(
@@ -1323,7 +1528,6 @@ async function loadFAQs(){
 
             }
         );
-
 
 
         faqs.sort(
@@ -1343,11 +1547,9 @@ async function loadFAQs(){
         );
 
 
-
         renderFAQs(
             faqs
         );
-
 
 
         console.log(
@@ -1361,7 +1563,6 @@ async function loadFAQs(){
             "❌ FAQ 載入失敗：",
             error
         );
-
 
 
         faqList.innerHTML =
@@ -1378,9 +1579,6 @@ async function loadFAQs(){
 }
 
 
-
-
-
 /* ========================================
    顯示 FAQ
 ======================================== */
@@ -1393,7 +1591,6 @@ function renderFAQs(faqs){
         );
 
 
-
     if(!faqList){
 
         return;
@@ -1401,10 +1598,8 @@ function renderFAQs(faqs){
     }
 
 
-
     faqList.innerHTML =
         "";
-
 
 
     if(faqs.length === 0){
@@ -1423,7 +1618,6 @@ function renderFAQs(faqs){
     }
 
 
-
     faqs.forEach(
         faq => {
 
@@ -1433,12 +1627,10 @@ function renderFAQs(faqs){
                 ).trim();
 
 
-
             const answerText =
                 String(
                     faq.answer || ""
                 ).trim();
-
 
 
             if(!questionText){
@@ -1448,17 +1640,14 @@ function renderFAQs(faqs){
             }
 
 
-
             const card =
                 document.createElement(
                     "div"
                 );
 
 
-
             card.className =
                 "card";
-
 
 
             const question =
@@ -1467,11 +1656,9 @@ function renderFAQs(faqs){
                 );
 
 
-
             question.textContent =
                 "Q：" +
                 questionText;
-
 
 
             const answer =
@@ -1480,11 +1667,9 @@ function renderFAQs(faqs){
                 );
 
 
-
             answer.textContent =
                 "A：" +
                 answerText;
-
 
 
             card.appendChild(
@@ -1492,11 +1677,9 @@ function renderFAQs(faqs){
             );
 
 
-
             card.appendChild(
                 answer
             );
-
 
 
             faqList.appendChild(
@@ -1509,12 +1692,11 @@ function renderFAQs(faqs){
 }
 
 
-
-
-
 /* ========================================
    網頁開啟後載入
 ======================================== */
+
+loadPhotoData();
 
 loadNews();
 
