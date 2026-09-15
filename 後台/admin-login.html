@@ -10,118 +10,122 @@
         content="width=device-width, initial-scale=1.0">
 
     <title>
-        後台登入｜中智佛學社
+        後台登入｜南華大學中智佛學社
     </title>
 
-
-    <!-- 後台登入頁樣式 -->
     <link
         rel="stylesheet"
         href="admin-login.css">
 
-
-    <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap"
         rel="stylesheet">
 
 </head>
 
-
 <body>
 
 
-    <!-- =====================================================
+    <!-- ========================================
          登入區塊
-    ====================================================== -->
+    ========================================= -->
 
-    <div class="login-box">
+    <div class="login-container">
 
-
-        <!-- 社徽 -->
-
-        <img
-            src="../assets/logo.png"
-            alt="中智佛學社社徽">
+        <div class="login-box">
 
 
+            <!-- 社團 Logo -->
 
-        <!-- 標題 -->
-
-        <h1>
-            中智佛學社後台
-        </h1>
-
-
-        <p class="subtitle">
-            管理員登入
-        </p>
+            <img
+                src="../assets/logo.png"
+                alt="中智佛學社社徽">
 
 
+            <h1>
+                中智佛學社
+            </h1>
 
-        <!-- =================================================
-             登入表單
-        ================================================== -->
-
-        <form id="loginForm">
-
-
-            <!-- Email -->
-
-            <input
-                type="email"
-                id="email"
-                placeholder="Email"
-                autocomplete="email"
-                required>
+            <h2>
+                網站管理後台
+            </h2>
 
 
+            <!-- ========================================
+                 登入表單
+            ========================================= -->
 
-            <!-- 密碼 -->
-
-            <input
-                type="password"
-                id="password"
-                placeholder="密碼"
-                autocomplete="current-password"
-                required>
+            <form id="loginForm">
 
 
+                <!-- Email -->
 
-            <!-- 登入按鈕 -->
+                <div class="input-group">
 
-            <button
-                type="submit"
-                id="loginButton">
+                    <label for="email">
+                        Email
+                    </label>
 
-                登入
+                    <input
+                        type="email"
+                        id="email"
+                        autocomplete="username"
+                        required>
 
-            </button>
+                </div>
 
 
-        </form>
+                <!-- 密碼 -->
+
+                <div class="input-group">
+
+                    <label for="password">
+                        密碼
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        autocomplete="current-password"
+                        required>
+
+                </div>
 
 
+                <!-- 登入按鈕 -->
 
-        <!-- 登入狀態訊息 -->
+                <button
+                    type="submit"
+                    id="loginButton">
 
-        <p id="message"></p>
+                    登入
 
+                </button>
+
+
+                <!-- 錯誤訊息 -->
+
+                <p id="errorMessage"></p>
+
+
+            </form>
+
+        </div>
 
     </div>
 
 
 
-    <!-- =====================================================
-         Firebase 登入程式
-    ====================================================== -->
+    <!-- ========================================
+         Firebase Authentication
+    ========================================= -->
 
     <script type="module">
 
 
-        /* =================================================
-           Firebase 模組
-        ================================================= */
+        /* ========================================
+           Firebase App
+        ======================================== */
 
         import {
             initializeApp
@@ -129,18 +133,30 @@
         from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
 
+        /* ========================================
+           Firebase Authentication
+        ======================================== */
+
         import {
+
             getAuth,
+
+            setPersistence,
+
+            browserSessionPersistence,
+
             signInWithEmailAndPassword,
+
             onAuthStateChanged
+
         }
         from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 
 
-        /* =================================================
+        /* ========================================
            Firebase 設定
-        ================================================= */
+        ======================================== */
 
         const firebaseConfig = {
 
@@ -169,9 +185,9 @@
 
 
 
-        /* =================================================
-           Firebase 初始化
-        ================================================= */
+        /* ========================================
+           初始化 Firebase
+        ======================================== */
 
         const app =
             initializeApp(
@@ -184,9 +200,9 @@
 
 
 
-        /* =================================================
-           DOM 元素
-        ================================================= */
+        /* ========================================
+           DOM
+        ======================================== */
 
         const loginForm =
             document.getElementById(
@@ -212,22 +228,34 @@
             );
 
 
-        const message =
+        const errorMessage =
             document.getElementById(
-                "message"
+                "errorMessage"
             );
 
 
 
-        /* =================================================
-           已登入時直接進入後台
-        ================================================= */
+        /* ========================================
+           登入狀態檢查
+
+           browserSessionPersistence 的登入資料
+           只存在目前瀏覽器分頁工作階段。
+
+           關閉分頁後：
+           → 登入狀態消失
+
+           關閉瀏覽器後：
+           → 登入狀態消失
+
+           重新整理：
+           → 保持登入
+        ======================================== */
 
         onAuthStateChanged(
             auth,
             (user) => {
 
-                if (user) {
+                if(user){
 
                     window.location.replace(
                         "admin.html"
@@ -240,25 +268,24 @@
 
 
 
-        /* =================================================
+        /* ========================================
            登入
-        ================================================= */
+        ======================================== */
 
         loginForm.addEventListener(
             "submit",
             async (event) => {
 
-                /*
-                    阻止表單重新整理頁面
-                */
-
                 event.preventDefault();
 
 
+                /* 清除舊錯誤訊息 */
 
-                /* -------------------------
-                   取得帳號密碼
-                ------------------------- */
+                errorMessage.textContent =
+                    "";
+
+
+                /* 取得輸入資料 */
 
                 const email =
                     emailInput.value.trim();
@@ -268,47 +295,7 @@
                     passwordInput.value;
 
 
-
-                /* -------------------------
-                   基本檢查
-                ------------------------- */
-
-                if (!email) {
-
-                    showMessage(
-                        "請輸入 Email"
-                    );
-
-
-                    emailInput.focus();
-
-                    return;
-
-                }
-
-
-                if (!password) {
-
-                    showMessage(
-                        "請輸入密碼"
-                    );
-
-
-                    passwordInput.focus();
-
-                    return;
-
-                }
-
-
-
-                /* -------------------------
-                   登入中狀態
-                ------------------------- */
-
-                const originalText =
-                    loginButton.textContent;
-
+                /* 防止重複點擊 */
 
                 loginButton.disabled =
                     true;
@@ -318,141 +305,125 @@
                     "登入中...";
 
 
-                showMessage(
-                    ""
-                );
+                try{
 
 
+                    /* ========================================
+                       關鍵設定
 
-                try {
+                       使用 Session Persistence。
 
-                    /*
-                        Firebase Email / Password 登入
-                    */
+                       不再永久儲存 Firebase 登入狀態。
+                    ======================================== */
 
-                    const credential =
-                        await signInWithEmailAndPassword(
-                            auth,
-                            email,
-                            password
-                        );
-
-
-                    console.log(
-                        "✅ 登入成功：",
-                        credential.user.email
+                    await setPersistence(
+                        auth,
+                        browserSessionPersistence
                     );
 
 
-                    showMessage(
-                        "登入成功，正在進入後台..."
+
+                    /* ========================================
+                       Firebase 登入
+                    ======================================== */
+
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
                     );
 
 
-                    /*
-                        登入成功後前往儀表板
-                    */
+
+                    /* ========================================
+                       登入成功
+                    ======================================== */
 
                     window.location.replace(
                         "admin.html"
                     );
 
+
                 }
-                catch (error) {
+                catch(error){
+
 
                     console.error(
-                        "❌ 登入失敗：",
+                        "登入失敗：",
                         error
                     );
 
 
-                    showMessage(
-                        getLoginErrorMessage(
-                            error.code
-                        )
-                    );
+                    /* ========================================
+                       中文錯誤訊息
+                    ======================================== */
 
-                }
-                finally {
+                    switch(error.code){
+
+
+                        case "auth/invalid-email":
+
+                            errorMessage.textContent =
+                                "Email 格式不正確";
+
+                            break;
+
+
+                        case "auth/invalid-credential":
+
+                            errorMessage.textContent =
+                                "Email 或密碼錯誤";
+
+                            break;
+
+
+                        case "auth/user-disabled":
+
+                            errorMessage.textContent =
+                                "此帳號已被停用";
+
+                            break;
+
+
+                        case "auth/too-many-requests":
+
+                            errorMessage.textContent =
+                                "登入嘗試次數過多，請稍後再試";
+
+                            break;
+
+
+                        case "auth/network-request-failed":
+
+                            errorMessage.textContent =
+                                "網路連線失敗，請檢查網路後再試";
+
+                            break;
+
+
+                        default:
+
+                            errorMessage.textContent =
+                                "登入失敗，請確認帳號密碼";
+
+                            break;
+
+                    }
+
+
+                    /* 恢復登入按鈕 */
 
                     loginButton.disabled =
                         false;
 
 
                     loginButton.textContent =
-                        originalText;
+                        "登入";
 
                 }
 
             }
         );
-
-
-
-        /* =================================================
-           顯示訊息
-        ================================================= */
-
-        function showMessage(text) {
-
-            if (!message) {
-
-                return;
-
-            }
-
-
-            message.textContent =
-                text;
-
-        }
-
-
-
-        /* =================================================
-           Firebase 登入錯誤轉中文
-        ================================================= */
-
-        function getLoginErrorMessage(
-            errorCode
-        ) {
-
-            switch (
-                errorCode
-            ) {
-
-                case "auth/invalid-email":
-
-                    return "Email 格式不正確";
-
-
-                case "auth/invalid-credential":
-
-                    return "Email 或密碼錯誤";
-
-
-                case "auth/user-disabled":
-
-                    return "此帳號已被停用";
-
-
-                case "auth/too-many-requests":
-
-                    return "登入失敗次數過多，請稍後再試";
-
-
-                case "auth/network-request-failed":
-
-                    return "網路連線失敗，請檢查網路";
-
-
-                default:
-
-                    return "登入失敗，請確認 Email 與密碼";
-
-            }
-
-        }
 
 
     </script>
