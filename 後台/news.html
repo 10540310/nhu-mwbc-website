@@ -40,11 +40,25 @@
          側邊欄
     ====================================================== -->
 
-    <div class="sidebar">
+    <div
+        class="sidebar"
+        id="sidebar">
 
         <h2>
             ☸️ 佛學社後台
         </h2>
+
+
+        <!-- 手機版選單按鈕 -->
+
+        <button
+            type="button"
+            class="mobile-menu-btn"
+            id="mobileMenuBtn"
+            aria-expanded="false">
+            ☰ 管理選單
+        </button>
+
 
         <ul>
 
@@ -277,6 +291,58 @@
         type="module"
         src="admin.js?v=5">
     </script>
+
+
+    <!-- =====================================================
+         手機版管理選單
+    ====================================================== -->
+
+    <script>
+
+        const sidebar =
+            document.getElementById(
+                "sidebar"
+            );
+
+
+        const mobileMenuBtn =
+            document.getElementById(
+                "mobileMenuBtn"
+            );
+
+
+        mobileMenuBtn.addEventListener(
+            "click",
+            function(){
+
+                const isOpen =
+                    sidebar.classList.toggle(
+                        "menu-open"
+                    );
+
+
+                mobileMenuBtn.setAttribute(
+                    "aria-expanded",
+                    isOpen
+                    ?
+                    "true"
+                    :
+                    "false"
+                );
+
+
+                mobileMenuBtn.textContent =
+                    isOpen
+                    ?
+                    "✕ 關閉選單"
+                    :
+                    "☰ 管理選單";
+
+            }
+        );
+
+    </script>
+
 
 </body>
 
