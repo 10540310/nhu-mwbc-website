@@ -785,6 +785,46 @@ async function loadNews(){
         }
 
 
+        /* ================================
+           新增：活動說明
+        ================================ */
+
+        const courseDescription =
+            document.getElementById(
+                "courseDescription"
+            );
+
+
+        const courseDescriptionText =
+            getString(
+                "courseDescription"
+            );
+
+
+        if(courseDescription){
+
+            if(courseDescriptionText){
+
+                courseDescription.textContent =
+                    courseDescriptionText;
+
+                courseDescription.style.display =
+                    "";
+
+            }
+            else{
+
+                courseDescription.textContent =
+                    "";
+
+                courseDescription.style.display =
+                    "none";
+
+            }
+
+        }
+
+
         const courseDeadline =
             document.getElementById(
                 "courseDeadline"
