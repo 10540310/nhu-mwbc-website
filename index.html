@@ -41,7 +41,6 @@
 
 </head>
 
-
 <body>
 
 
@@ -124,12 +123,10 @@
         南華大學中智佛學社
     </h1>
 
-    <!-- 可由後台「網站設定」修改 -->
     <p id="heroSubtitle">
         學習佛法・培養智慧・實踐慈悲
     </p>
 
-    <!-- 可由後台「網站設定」修改 -->
     <p id="heroDescription">
         一起探索生命智慧，認識志同道合的夥伴，
         在大學生活中找到成長與安定的力量。
@@ -143,12 +140,10 @@
 
     <div class="hero-features">
 
-        <!-- 可由後台「網站設定」修改 -->
         <span id="clubTimeDisplay">
             🕧 社課時間：週三 12:00～13:00
         </span>
 
-        <!-- 可由後台「網站設定」修改 -->
         <span id="clubLocationDisplay">
             📍 社課地點：學慧樓
         </span>
@@ -202,9 +197,6 @@
 
     <div class="cards">
 
-
-        <!-- 歡迎公告 -->
-
         <div class="card">
 
             <h3>
@@ -231,8 +223,6 @@
 
         </div>
 
-
-        <!-- 社課資訊 -->
 
         <div class="card">
 
@@ -286,8 +276,6 @@
 
         </div>
 
-
-        <!-- 活動預告 -->
 
         <div class="card">
 
@@ -479,47 +467,18 @@
         活動照片
     </h2>
 
-    <div class="gallery">
+    <!--
+        活動照片現在由 assets/photos.json 自動產生。
+        不再把照片清單寫死在 HTML。
+    -->
 
-        <a
-            href="assets/activity1.jpg"
-            data-lightbox="gallery">
+    <div
+        class="gallery"
+        id="activityGallery">
 
-            <img
-                src="assets/activity1.jpg"
-                alt="活動照片1">
-
-        </a>
-
-        <a
-            href="assets/activity2.jpg"
-            data-lightbox="gallery">
-
-            <img
-                src="assets/activity2.jpg"
-                alt="活動照片2">
-
-        </a>
-
-        <a
-            href="assets/activity3.jpg"
-            data-lightbox="gallery">
-
-            <img
-                src="assets/activity3.jpg"
-                alt="活動照片3">
-
-        </a>
-
-        <a
-            href="assets/activity4.jpg"
-            data-lightbox="gallery">
-
-            <img
-                src="assets/activity4.jpg"
-                alt="活動照片4">
-
-        </a>
+        <p>
+            活動照片載入中...
+        </p>
 
     </div>
 
@@ -700,7 +659,7 @@
         <div class="card">
 
             <p>
-                FAQ 資料載入中...
+                Q&A 資料載入中...
             </p>
 
         </div>
@@ -721,8 +680,6 @@
     </h2>
 
     <div class="contact-box">
-
-        <!-- 可由後台「網站設定」修改 -->
 
         <a
             id="instagramLink"
@@ -770,7 +727,7 @@
      主程式
 ========================= -->
 
-<script src="script.js?v=7"></script>
+<script src="script.js?v=8"></script>
 
 
 <!-- =========================
