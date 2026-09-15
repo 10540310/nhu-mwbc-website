@@ -130,7 +130,7 @@
                 </h3>
 
                 <p id="photoCount">
-                    4
+                    ...
                 </p>
 
             </div>
@@ -227,11 +227,15 @@
 
 
         const app =
-            initializeApp(firebaseConfig);
+            initializeApp(
+                firebaseConfig
+            );
 
 
         const auth =
-            getAuth(app);
+            getAuth(
+                app
+            );
 
 
         const db =
@@ -244,6 +248,12 @@
         const newsCount =
             document.getElementById(
                 "newsCount"
+            );
+
+
+        const photoCount =
+            document.getElementById(
+                "photoCount"
             );
 
 
@@ -267,7 +277,7 @@
             auth,
             async (user) => {
 
-                if (!user) {
+                if(!user){
 
                     window.location.replace(
                         "admin-login.html"
@@ -289,23 +299,27 @@
         ================================================= */
 
         window.logout =
-            async function () {
+            async function(){
 
-                try {
+                try{
 
-                    await signOut(auth);
+                    await signOut(
+                        auth
+                    );
+
 
                     window.location.replace(
                         "admin-login.html"
                     );
 
                 }
-                catch (error) {
+                catch(error){
 
                     console.error(
                         "登出失敗：",
                         error
                     );
+
 
                     alert(
                         "登出失敗，請稍後再試"
@@ -320,11 +334,13 @@
            儀表板統計
         ================================================= */
 
-        async function loadDashboardStats() {
+        async function loadDashboardStats(){
 
             await Promise.all([
 
                 loadNewsCount(),
+
+                loadPhotoCount(),
 
                 loadCourseCount(),
 
@@ -335,9 +351,13 @@
         }
 
 
-        async function loadNewsCount() {
+        /* =================================================
+           最新消息統計
+        ================================================= */
 
-            try {
+        async function loadNewsCount(){
+
+            try{
 
                 const snapshot =
                     await getDoc(
@@ -351,16 +371,19 @@
 
                 newsCount.textContent =
                     snapshot.exists()
-                        ? "1"
-                        : "0";
+                    ?
+                    "3"
+                    :
+                    "0";
 
             }
-            catch (error) {
+            catch(error){
 
                 console.error(
                     "最新消息統計失敗：",
                     error
                 );
+
 
                 newsCount.textContent =
                     "-";
@@ -370,9 +393,113 @@
         }
 
 
-        async function loadCourseCount() {
+        /* =================================================
+           活動圖片統計
+        ================================================= */
 
-            try {
+        async function loadPhotoCount(){
+
+            try{
+
+                const response =
+                    await fetch(
+                        "../assets/photos.json?v=" +
+                        Date.now()
+                    );
+
+
+                if(!response.ok){
+
+                    throw new Error(
+                        "HTTP " +
+                        response.status
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                const featured =
+                    Array.isArray(
+                        data.featured
+                    )
+                    ?
+                    data.featured
+                    :
+                    [];
+
+
+                const gallery =
+                    Array.isArray(
+                        data.gallery
+                    )
+                    ?
+                    data.gallery
+                    :
+                    [];
+
+
+                const validFeatured =
+                    featured.filter(
+                        photo => {
+
+                            return (
+                                typeof photo === "string" &&
+                                photo.trim() !== ""
+                            );
+
+                        }
+                    );
+
+
+                const validGallery =
+                    gallery.filter(
+                        photo => {
+
+                            return (
+                                typeof photo === "string" &&
+                                photo.trim() !== ""
+                            );
+
+                        }
+                    );
+
+
+                const total =
+                    validFeatured.length +
+                    validGallery.length;
+
+
+                photoCount.textContent =
+                    total;
+
+            }
+            catch(error){
+
+                console.error(
+                    "活動圖片統計失敗：",
+                    error
+                );
+
+
+                photoCount.textContent =
+                    "-";
+
+            }
+
+        }
+
+
+        /* =================================================
+           課程統計
+        ================================================= */
+
+        async function loadCourseCount(){
+
+            try{
 
                 const snapshot =
                     await getDocs(
@@ -387,12 +514,13 @@
                     snapshot.size;
 
             }
-            catch (error) {
+            catch(error){
 
                 console.error(
                     "課程統計失敗：",
                     error
                 );
+
 
                 courseCount.textContent =
                     "-";
@@ -402,9 +530,13 @@
         }
 
 
-        async function loadFaqCount() {
+        /* =================================================
+           Q&A 統計
+        ================================================= */
 
-            try {
+        async function loadFaqCount(){
+
+            try{
 
                 const snapshot =
                     await getDocs(
@@ -419,12 +551,13 @@
                     snapshot.size;
 
             }
-            catch (error) {
+            catch(error){
 
                 console.error(
                     "Q&A 統計失敗：",
                     error
                 );
+
 
                 faqCount.textContent =
                     "-";
