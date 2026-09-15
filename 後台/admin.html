@@ -36,16 +36,27 @@
 <body>
 
 
-
     <!-- =====================================================
          側邊欄
     ====================================================== -->
 
-    <div class="sidebar">
+    <div
+        class="sidebar"
+        id="sidebar">
 
         <h2>
             ☸️ 佛學社後台
         </h2>
+
+        <!-- 手機版選單按鈕 -->
+
+        <button
+            type="button"
+            class="mobile-menu-btn"
+            id="mobileMenuBtn"
+            aria-expanded="false">
+            ☰ 管理選單
+        </button>
 
         <ul>
 
@@ -96,7 +107,6 @@
     </div>
 
 
-
     <!-- =====================================================
          主內容
     ====================================================== -->
@@ -108,7 +118,6 @@
         </h1>
 
         <div class="dashboard">
-
 
 
             <!-- 最新消息 -->
@@ -126,7 +135,6 @@
             </div>
 
 
-
             <!-- 活動照片 -->
 
             <div class="card">
@@ -142,7 +150,6 @@
             </div>
 
 
-
             <!-- 本學期課程 -->
 
             <div class="card">
@@ -156,7 +163,6 @@
                 </p>
 
             </div>
-
 
 
             <!-- Q&A -->
@@ -178,7 +184,6 @@
     </div>
 
 
-
     <!-- =====================================================
          Firebase / 儀表板統計
     ====================================================== -->
@@ -191,14 +196,12 @@
         from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
 
-
         import {
             getAuth,
             onAuthStateChanged,
             signOut
         }
         from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-
 
 
         import {
@@ -209,7 +212,6 @@
             getDoc
         }
         from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
 
 
         const firebaseConfig = {
@@ -238,19 +240,16 @@
         };
 
 
-
         const app =
             initializeApp(
                 firebaseConfig
             );
 
 
-
         const auth =
             getAuth(
                 app
             );
-
 
 
         const db =
@@ -260,12 +259,10 @@
             );
 
 
-
         const newsCount =
             document.getElementById(
                 "newsCount"
             );
-
 
 
         const photoCount =
@@ -274,12 +271,10 @@
             );
 
 
-
         const courseCount =
             document.getElementById(
                 "courseCount"
             );
-
 
 
         const faqCount =
@@ -287,6 +282,52 @@
                 "faqCount"
             );
 
+
+        /* =================================================
+           手機版管理選單
+        ================================================= */
+
+        const sidebar =
+            document.getElementById(
+                "sidebar"
+            );
+
+
+        const mobileMenuBtn =
+            document.getElementById(
+                "mobileMenuBtn"
+            );
+
+
+        mobileMenuBtn.addEventListener(
+            "click",
+            function(){
+
+                const isOpen =
+                    sidebar.classList.toggle(
+                        "menu-open"
+                    );
+
+
+                mobileMenuBtn.setAttribute(
+                    "aria-expanded",
+                    isOpen
+                    ?
+                    "true"
+                    :
+                    "false"
+                );
+
+
+                mobileMenuBtn.textContent =
+                    isOpen
+                    ?
+                    "✕ 關閉選單"
+                    :
+                    "☰ 管理選單";
+
+            }
+        );
 
 
         /* =================================================
@@ -308,12 +349,10 @@
                 }
 
 
-
                 await loadDashboardStats();
 
             }
         );
-
 
 
         /* =================================================
@@ -330,7 +369,6 @@
                     );
 
 
-
                     window.location.replace(
                         "admin-login.html"
                     );
@@ -344,7 +382,6 @@
                     );
 
 
-
                     alert(
                         "登出失敗，請稍後再試"
                     );
@@ -352,7 +389,6 @@
                 }
 
             };
-
 
 
         /* =================================================
@@ -376,7 +412,6 @@
         }
 
 
-
         /* =================================================
            最新消息統計
         ================================================= */
@@ -395,7 +430,6 @@
                     );
 
 
-
                 newsCount.textContent =
                     snapshot.exists()
                     ?
@@ -412,14 +446,12 @@
                 );
 
 
-
                 newsCount.textContent =
                     "-";
 
             }
 
         }
-
 
 
         /* =================================================
@@ -437,7 +469,6 @@
                     );
 
 
-
                 if(!response.ok){
 
                     throw new Error(
@@ -448,10 +479,8 @@
                 }
 
 
-
                 const data =
                     await response.json();
-
 
 
                 const featured =
@@ -464,7 +493,6 @@
                     [];
 
 
-
                 const gallery =
                     Array.isArray(
                         data.gallery
@@ -473,7 +501,6 @@
                     data.gallery
                     :
                     [];
-
 
 
                 const validFeatured =
@@ -489,7 +516,6 @@
                     );
 
 
-
                 const validGallery =
                     gallery.filter(
                         photo => {
@@ -503,11 +529,9 @@
                     );
 
 
-
                 const total =
                     validFeatured.length +
                     validGallery.length;
-
 
 
                 photoCount.textContent =
@@ -522,14 +546,12 @@
                 );
 
 
-
                 photoCount.textContent =
                     "-";
 
             }
 
         }
-
 
 
         /* =================================================
@@ -549,7 +571,6 @@
                     );
 
 
-
                 courseCount.textContent =
                     snapshot.size;
 
@@ -562,14 +583,12 @@
                 );
 
 
-
                 courseCount.textContent =
                     "-";
 
             }
 
         }
-
 
 
         /* =================================================
@@ -589,7 +608,6 @@
                     );
 
 
-
                 faqCount.textContent =
                     snapshot.size;
 
@@ -600,7 +618,6 @@
                     "Q&A 統計失敗：",
                     error
                 );
-
 
 
                 faqCount.textContent =
