@@ -32,7 +32,6 @@ import {
 from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 
-
 /* =========================================================
    Firebase 設定
 ========================================================= */
@@ -63,7 +62,6 @@ const firebaseConfig = {
 };
 
 
-
 /* =========================================================
    Firebase 初始化
 ========================================================= */
@@ -89,7 +87,6 @@ const db =
         app,
         "default"
     );
-
 
 
 /* =========================================================
@@ -125,7 +122,6 @@ const club =
     );
 
 
-
 /* -------------------------
    社課資訊
 ------------------------- */
@@ -139,6 +135,14 @@ const courseTitle =
 const courseTopic =
     document.getElementById(
         "courseTopic"
+    );
+
+
+/* 新增：活動說明 */
+
+const courseDescription =
+    document.getElementById(
+        "courseDescription"
     );
 
 
@@ -158,7 +162,6 @@ const courseNotice =
     document.getElementById(
         "courseNotice"
     );
-
 
 
 /* -------------------------
@@ -183,7 +186,6 @@ const eventDescription =
     );
 
 
-
 /* -------------------------
    操作按鈕 / 顯示區
 ------------------------- */
@@ -198,7 +200,6 @@ const newsList =
     document.getElementById(
         "newsList"
     );
-
 
 
 /* =========================================================
@@ -242,7 +243,6 @@ onAuthStateChanged(
 );
 
 
-
 /* =========================================================
    登出
 ========================================================= */
@@ -275,7 +275,6 @@ window.logout =
         }
 
     };
-
 
 
 /* =========================================================
@@ -344,7 +343,6 @@ async function loadNews() {
             snapshot.data();
 
 
-
         /* =================================================
            歡迎公告
         ================================================= */
@@ -373,7 +371,6 @@ async function loadNews() {
         );
 
 
-
         /* =================================================
            社課資訊
         ================================================= */
@@ -387,6 +384,14 @@ async function loadNews() {
         setInputValue(
             courseTopic,
             data.courseTopic
+        );
+
+
+        /* 新增：活動說明 */
+
+        setInputValue(
+            courseDescription,
+            data.courseDescription
         );
 
 
@@ -406,7 +411,6 @@ async function loadNews() {
             courseNotice,
             data.courseNotice
         );
-
 
 
         /* =================================================
@@ -429,7 +433,6 @@ async function loadNews() {
             eventDescription,
             data.eventDescription
         );
-
 
 
         /* =================================================
@@ -470,7 +473,6 @@ async function loadNews() {
 }
 
 
-
 /* =========================================================
    儲存最新消息
 ========================================================= */
@@ -505,7 +507,6 @@ if (saveBtn) {
             }
 
 
-
             /* -------------------------
                按鈕進入儲存狀態
             ------------------------- */
@@ -522,7 +523,6 @@ if (saveBtn) {
                 "儲存中...";
 
 
-
             try {
 
                 const newsRef =
@@ -531,7 +531,6 @@ if (saveBtn) {
                         "news",
                         "news"
                     );
-
 
 
                 /*
@@ -575,6 +574,14 @@ if (saveBtn) {
                             courseTopic
                         ),
 
+
+                    /* 新增：活動說明 */
+
+                    courseDescription:
+                        getInputValue(
+                            courseDescription
+                        ),
+
                     deadline:
                         getInputValue(
                             deadline
@@ -615,7 +622,6 @@ if (saveBtn) {
                         serverTimestamp()
 
                 };
-
 
 
                 /*
@@ -686,7 +692,6 @@ if (saveBtn) {
 }
 
 
-
 /* =========================================================
    顯示目前已儲存資料
 ========================================================= */
@@ -740,6 +745,17 @@ function renderSavedNews(data) {
 
                 ${escapeHtml(
                     data.courseTopic || ""
+                )}
+            </p>
+
+
+            <p>
+                <strong>
+                    活動說明：
+                </strong>
+
+                ${escapeHtml(
+                    data.courseDescription || ""
                 )}
             </p>
 
@@ -811,7 +827,6 @@ function renderSavedNews(data) {
 }
 
 
-
 /* =========================================================
    工具函式
 ========================================================= */
@@ -839,7 +854,6 @@ function setInputValue(
 }
 
 
-
 /*
     取得 input / textarea 的值
 */
@@ -858,7 +872,6 @@ function getInputValue(
     return element.value.trim();
 
 }
-
 
 
 /*
