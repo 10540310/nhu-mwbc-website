@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        最新消息管理｜中智佛學社後台
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="admin.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         側邊欄
+    ====================================================== -->
+
+    <div class="sidebar">
+
+        <h2>
+            ☸️ 佛學社後台
+        </h2>
+
+        <ul>
+
+            <li>
+                <a href="admin.html">
+                    儀表板
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="news.html">
+                    最新消息
+                </a>
+            </li>
+
+            <li>
+                <a href="course.html">
+                    課程表管理
+                </a>
+            </li>
+
+            <li>
+                活動照片
+            </li>
+
+            <li>
+                <a href="faq.html">
+                    Q&A管理
+                </a>
+            </li>
+
+            <li>
+                <a href="settings.html">
+                    網站設定
+                </a>
+            </li>
+
+            <li
+                class="logout"
+                onclick="logout()">
+                登出
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- =====================================================
+         主內容
+    ====================================================== -->
+
+    <div class="main">
+
+        <h1>
+            最新消息管理
+        </h1>
+
+
+        <div class="panel">
+
+            <h2>
+                🌱 歡迎新朋友
+            </h2>
+
+            <label for="welcomeContent">
+                歡迎內容
+            </label>
+
+            <textarea
+                id="welcomeContent"
+                rows="5"></textarea>
+
+
+            <label for="pretest">
+                期初測驗日期
+            </label>
+
+            <input
+                type="text"
+                id="pretest">
+
+
+            <label for="posttest">
+                期末測驗日期
+            </label>
+
+            <input
+                type="text"
+                id="posttest">
+
+
+            <label for="club">
+                社團活動日期
+            </label>
+
+            <input
+                type="text"
+                id="club">
+
+        </div>
+
+
+        <div class="panel">
+
+            <h2>
+                📚 社課消息
+            </h2>
+
+            <label for="courseTitle">
+                標題
+            </label>
+
+            <input
+                type="text"
+                id="courseTitle">
+
+
+            <label for="courseTopic">
+                社課主題
+            </label>
+
+            <input
+                type="text"
+                id="courseTopic">
+
+
+            <label for="deadline">
+                報名截止
+            </label>
+
+            <input
+                type="text"
+                id="deadline">
+
+
+            <label for="link">
+                報名連結
+            </label>
+
+            <input
+                type="url"
+                id="link">
+
+
+            <label for="courseNotice">
+                社課提醒
+            </label>
+
+            <textarea
+                id="courseNotice"
+                rows="5"></textarea>
+
+        </div>
+
+
+        <div class="panel">
+
+            <h2>
+                🎉 活動消息
+            </h2>
+
+            <label for="eventDate">
+                活動日期
+            </label>
+
+            <input
+                type="text"
+                id="eventDate">
+
+
+            <label for="eventName">
+                活動名稱
+            </label>
+
+            <input
+                type="text"
+                id="eventName">
+
+
+            <label for="eventDescription">
+                活動說明
+            </label>
+
+            <textarea
+                id="eventDescription"
+                rows="5"></textarea>
+
+        </div>
+
+
+        <div class="panel">
+
+            <button
+                type="button"
+                id="saveBtn">
+                儲存最新消息
+            </button>
+
+            <p id="message"></p>
+
+        </div>
+
+
+        <div class="panel">
+
+            <h2>
+                👀 已儲存內容預覽
+            </h2>
+
+            <div id="newsList">
+
+                <p class="empty-message">
+                    最新消息資料載入中...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script
+        type="module"
+        src="admin.js?v=5">
+    </script>
+
+</body>
+
+</html>

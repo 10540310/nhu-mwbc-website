@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        課程表管理｜中智佛學社後台
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="admin.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         側邊欄
+    ====================================================== -->
+
+    <div class="sidebar">
+
+        <h2>
+            ☸️ 佛學社後台
+        </h2>
+
+        <ul>
+
+            <li>
+                <a href="admin.html">
+                    儀表板
+                </a>
+            </li>
+
+            <li>
+                <a href="news.html">
+                    最新消息
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="course.html">
+                    課程表管理
+                </a>
+            </li>
+
+            <li>
+                活動照片
+            </li>
+
+            <li>
+                <a href="faq.html">
+                    Q&A管理
+                </a>
+            </li>
+
+            <li>
+                <a href="settings.html">
+                    網站設定
+                </a>
+            </li>
+
+            <li
+                class="logout"
+                onclick="logout()">
+                登出
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- =====================================================
+         主內容
+    ====================================================== -->
+
+    <div class="main">
+
+        <h1>
+            課程表管理
+        </h1>
+
+
+        <!-- =================================================
+             課程表標題
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                📝 課程表標題
+            </h2>
+
+            <label for="courseTableTitle">
+                首頁課程表標題
+            </label>
+
+            <input
+                type="text"
+                id="courseTableTitle"
+                placeholder="例如：115學年度第一學期課程表">
+
+            <button
+                type="button"
+                id="saveCourseTableTitleBtn">
+                儲存課程表標題
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             新增課程
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                ➕ 新增課程
+            </h2>
+
+            <label for="courseDate">
+                日期
+            </label>
+
+            <input
+                type="text"
+                id="courseDate"
+                placeholder="例如：9/16">
+
+
+            <label for="courseName">
+                課程主題
+            </label>
+
+            <input
+                type="text"
+                id="courseName"
+                placeholder="輸入課程主題">
+
+
+            <button
+                type="button"
+                id="addCourseBtn">
+                新增課程
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             課程列表
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                📚 已建立的課程
+            </h2>
+
+            <div id="courseList">
+
+                <p class="empty-message">
+                    課程資料載入中...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script
+        type="module"
+        src="course.js?v=4">
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        網站設定｜中智佛學社後台
+    </title>
+
+
+    <!-- =====================================================
+         後台共用樣式
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="admin.css">
+
+
+    <!-- =====================================================
+         Google Fonts
+    ====================================================== -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         側邊欄
+    ====================================================== -->
+
+    <div class="sidebar">
+
+        <h2>
+            ☸️ 佛學社後台
+        </h2>
+
+
+        <ul>
+
+            <!-- 儀表板 -->
+
+            <li>
+
+                <a href="admin.html">
+                    儀表板
+                </a>
+
+            </li>
+
+
+            <!-- 最新消息 -->
+
+            <li>
+
+                <a href="news.html">
+                    最新消息
+                </a>
+
+            </li>
+
+
+            <!-- 課程表管理 -->
+
+            <li>
+
+                <a href="course.html">
+                    課程表管理
+                </a>
+
+            </li>
+
+
+            <!-- 活動照片 -->
+
+            <li>
+                活動照片
+            </li>
+
+
+            <!-- Q&A 管理 -->
+
+            <li>
+
+                <a href="faq.html">
+                    Q&A管理
+                </a>
+
+            </li>
+
+
+            <!-- 網站設定 -->
+
+            <li class="active">
+
+                <a href="settings.html">
+                    網站設定
+                </a>
+
+            </li>
+
+
+            <!-- 登出 -->
+
+            <li
+                class="logout"
+                onclick="logout()">
+
+                登出
+
+            </li>
+
+        </ul>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         主要內容
+    ====================================================== -->
+
+    <div class="main">
+
+
+        <!-- 頁面標題 -->
+
+        <h1>
+            網站設定
+        </h1>
+
+
+
+        <!-- =================================================
+             首頁內容
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                🏠 首頁內容
+            </h2>
+
+
+            <!-- 首頁副標題 -->
+
+            <label for="heroSubtitle">
+                首頁副標題
+            </label>
+
+            <input
+                type="text"
+                id="heroSubtitle"
+                placeholder="例如：在忙碌的大學生活中，留一個空間給自己的心">
+
+
+            <!-- 首頁簡介 -->
+
+            <label for="heroDescription">
+                首頁簡介
+            </label>
+
+            <textarea
+                id="heroDescription"
+                placeholder="輸入首頁簡介"></textarea>
+
+        </div>
+
+
+
+        <!-- =================================================
+             社課資訊
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                📚 社課資訊
+            </h2>
+
+
+            <!-- 社課時間 -->
+
+            <label for="clubTime">
+                社課時間
+            </label>
+
+            <input
+                type="text"
+                id="clubTime"
+                placeholder="例如：每週三中午 12:30～13:00">
+
+
+            <!-- 社課地點 -->
+
+            <label for="clubLocation">
+                社課地點
+            </label>
+
+            <input
+                type="text"
+                id="clubLocation"
+                placeholder="例如：學慧樓">
+
+        </div>
+
+
+
+        <!-- =================================================
+             聯絡方式
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                📱 聯絡方式
+            </h2>
+
+
+            <!-- Instagram -->
+
+            <label for="instagram">
+                Instagram
+            </label>
+
+            <input
+                type="url"
+                id="instagram"
+                placeholder="https://www.instagram.com/...">
+
+
+            <!-- LINE -->
+
+            <label for="line">
+                LINE
+            </label>
+
+            <input
+                type="url"
+                id="line"
+                placeholder="https://line.me/...">
+
+
+            <!-- Email -->
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="example@gmail.com">
+
+        </div>
+
+
+
+        <!-- =================================================
+             儲存設定
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                💾 儲存網站設定
+            </h2>
+
+
+            <button
+                type="button"
+                id="saveSettingsBtn">
+
+                儲存設定
+
+            </button>
+
+
+            <!-- 操作結果 -->
+
+            <p id="message"></p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         網站設定管理程式
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="settings.js?v=1">
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Q&A 管理｜中智佛學社後台
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="admin.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         側邊欄
+    ====================================================== -->
+
+    <div class="sidebar">
+
+        <h2>
+            ☸️ 佛學社後台
+        </h2>
+
+        <ul>
+
+            <li>
+                <a href="admin.html">
+                    儀表板
+                </a>
+            </li>
+
+            <li>
+                <a href="news.html">
+                    最新消息
+                </a>
+            </li>
+
+            <li>
+                <a href="course.html">
+                    課程表管理
+                </a>
+            </li>
+
+            <li>
+                活動照片
+            </li>
+
+            <li class="active">
+                <a href="faq.html">
+                    Q&A管理
+                </a>
+            </li>
+
+            <li>
+                <a href="settings.html">
+                    網站設定
+                </a>
+            </li>
+
+            <li
+                class="logout"
+                onclick="logout()">
+                登出
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- =====================================================
+         主內容
+    ====================================================== -->
+
+    <div class="main">
+
+        <h1>
+            Q&A 管理
+        </h1>
+
+
+        <!-- =================================================
+             新增 Q&A
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                ➕ 新增常見問題
+            </h2>
+
+            <div class="form-group">
+
+                <label for="question">
+                    問題
+                </label>
+
+                <input
+                    type="text"
+                    id="question"
+                    placeholder="例如：佛學社一定要吃素嗎？">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="answer">
+                    回答
+                </label>
+
+                <textarea
+                    id="answer"
+                    rows="5"
+                    placeholder="輸入回答內容"></textarea>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="addFaqButton">
+                新增 Q&A
+            </button>
+
+
+            <p id="message"></p>
+
+        </div>
+
+
+        <!-- =================================================
+             Q&A 列表
+        ================================================== -->
+
+        <div class="panel">
+
+            <h2>
+                📚 已建立的 Q&A
+            </h2>
+
+            <div id="faqList">
+
+                <p class="empty-message">
+                    Q&A 資料載入中...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script
+        type="module"
+        src="faq.js?v=2">
+    </script>
+
+</body>
+
+</html>

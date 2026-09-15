@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        中智佛學社後台
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="admin.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         側邊欄
+    ====================================================== -->
+
+    <div class="sidebar">
+
+        <h2>
+            ☸️ 佛學社後台
+        </h2>
+
+        <ul>
+
+            <li class="active">
+                <a href="admin.html">
+                    儀表板
+                </a>
+            </li>
+
+            <li>
+                <a href="news.html">
+                    最新消息
+                </a>
+            </li>
+
+            <li>
+                <a href="course.html">
+                    課程表管理
+                </a>
+            </li>
+
+            <li>
+                活動照片
+            </li>
+
+            <li>
+                <a href="faq.html">
+                    Q&A管理
+                </a>
+            </li>
+
+            <li>
+                <a href="settings.html">
+                    網站設定
+                </a>
+            </li>
+
+            <li
+                class="logout"
+                onclick="logout()">
+                登出
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- =====================================================
+         主內容
+    ====================================================== -->
+
+    <div class="main">
+
+        <h1>
+            南華大學中智佛學社
+        </h1>
+
+        <div class="dashboard">
+
+
+            <!-- 最新消息 -->
+
+            <div class="card">
+
+                <h3>
+                    最新消息
+                </h3>
+
+                <p id="newsCount">
+                    ...
+                </p>
+
+            </div>
+
+
+            <!-- 活動照片 -->
+
+            <div class="card">
+
+                <h3>
+                    活動照片
+                </h3>
+
+                <p id="photoCount">
+                    4
+                </p>
+
+            </div>
+
+
+            <!-- 本學期課程 -->
+
+            <div class="card">
+
+                <h3>
+                    本學期課程
+                </h3>
+
+                <p id="courseCount">
+                    ...
+                </p>
+
+            </div>
+
+
+            <!-- Q&A -->
+
+            <div class="card">
+
+                <h3>
+                    Q&A
+                </h3>
+
+                <p id="faqCount">
+                    ...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         Firebase / 儀表板統計
+    ====================================================== -->
+
+    <script type="module">
+
+        import {
+            initializeApp
+        }
+        from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        }
+        from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+        import {
+            getFirestore,
+            collection,
+            getDocs,
+            doc,
+            getDoc
+        }
+        from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+        const firebaseConfig = {
+
+            apiKey:
+                "AIzaSyDk8-Q0gQEW-g6RYrSJgDeqwMwUEM9Khig",
+
+            authDomain:
+                "nhumwbc.firebaseapp.com",
+
+            projectId:
+                "nhumwbc",
+
+            storageBucket:
+                "nhumwbc.firebasestorage.app",
+
+            messagingSenderId:
+                "191508777501",
+
+            appId:
+                "1:191508777501:web:af7b9a43542654921954f4",
+
+            measurementId:
+                "G-EE2J8CPS0H"
+
+        };
+
+
+        const app =
+            initializeApp(firebaseConfig);
+
+
+        const auth =
+            getAuth(app);
+
+
+        const db =
+            getFirestore(
+                app,
+                "default"
+            );
+
+
+        const newsCount =
+            document.getElementById(
+                "newsCount"
+            );
+
+
+        const courseCount =
+            document.getElementById(
+                "courseCount"
+            );
+
+
+        const faqCount =
+            document.getElementById(
+                "faqCount"
+            );
+
+
+        /* =================================================
+           登入檢查
+        ================================================= */
+
+        onAuthStateChanged(
+            auth,
+            async (user) => {
+
+                if (!user) {
+
+                    window.location.replace(
+                        "admin-login.html"
+                    );
+
+                    return;
+
+                }
+
+
+                await loadDashboardStats();
+
+            }
+        );
+
+
+        /* =================================================
+           登出
+        ================================================= */
+
+        window.logout =
+            async function () {
+
+                try {
+
+                    await signOut(auth);
+
+                    window.location.replace(
+                        "admin-login.html"
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "登出失敗：",
+                        error
+                    );
+
+                    alert(
+                        "登出失敗，請稍後再試"
+                    );
+
+                }
+
+            };
+
+
+        /* =================================================
+           儀表板統計
+        ================================================= */
+
+        async function loadDashboardStats() {
+
+            await Promise.all([
+
+                loadNewsCount(),
+
+                loadCourseCount(),
+
+                loadFaqCount()
+
+            ]);
+
+        }
+
+
+        async function loadNewsCount() {
+
+            try {
+
+                const snapshot =
+                    await getDoc(
+                        doc(
+                            db,
+                            "news",
+                            "news"
+                        )
+                    );
+
+
+                newsCount.textContent =
+                    snapshot.exists()
+                        ? "1"
+                        : "0";
+
+            }
+            catch (error) {
+
+                console.error(
+                    "最新消息統計失敗：",
+                    error
+                );
+
+                newsCount.textContent =
+                    "-";
+
+            }
+
+        }
+
+
+        async function loadCourseCount() {
+
+            try {
+
+                const snapshot =
+                    await getDocs(
+                        collection(
+                            db,
+                            "courses"
+                        )
+                    );
+
+
+                courseCount.textContent =
+                    snapshot.size;
+
+            }
+            catch (error) {
+
+                console.error(
+                    "課程統計失敗：",
+                    error
+                );
+
+                courseCount.textContent =
+                    "-";
+
+            }
+
+        }
+
+
+        async function loadFaqCount() {
+
+            try {
+
+                const snapshot =
+                    await getDocs(
+                        collection(
+                            db,
+                            "faqs"
+                        )
+                    );
+
+
+                faqCount.textContent =
+                    snapshot.size;
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Q&A 統計失敗：",
+                    error
+                );
+
+                faqCount.textContent =
+                    "-";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

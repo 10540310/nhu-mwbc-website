@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        後台登入｜中智佛學社
+    </title>
+
+
+    <!-- 後台登入頁樣式 -->
+    <link
+        rel="stylesheet"
+        href="admin-login.css">
+
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         登入區塊
+    ====================================================== -->
+
+    <div class="login-box">
+
+
+        <!-- 社徽 -->
+
+        <img
+            src="../assets/logo.png"
+            alt="中智佛學社社徽">
+
+
+
+        <!-- 標題 -->
+
+        <h1>
+            中智佛學社後台
+        </h1>
+
+
+        <p class="subtitle">
+            管理員登入
+        </p>
+
+
+
+        <!-- =================================================
+             登入表單
+        ================================================== -->
+
+        <form id="loginForm">
+
+
+            <!-- Email -->
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Email"
+                autocomplete="email"
+                required>
+
+
+
+            <!-- 密碼 -->
+
+            <input
+                type="password"
+                id="password"
+                placeholder="密碼"
+                autocomplete="current-password"
+                required>
+
+
+
+            <!-- 登入按鈕 -->
+
+            <button
+                type="submit"
+                id="loginButton">
+
+                登入
+
+            </button>
+
+
+        </form>
+
+
+
+        <!-- 登入狀態訊息 -->
+
+        <p id="message"></p>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         Firebase 登入程式
+    ====================================================== -->
+
+    <script type="module">
+
+
+        /* =================================================
+           Firebase 模組
+        ================================================= */
+
+        import {
+            initializeApp
+        }
+        from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            onAuthStateChanged
+        }
+        from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+
+        /* =================================================
+           Firebase 設定
+        ================================================= */
+
+        const firebaseConfig = {
+
+            apiKey:
+                "AIzaSyDk8-Q0gQEW-g6RYrSJgDeqwMwUEM9Khig",
+
+            authDomain:
+                "nhumwbc.firebaseapp.com",
+
+            projectId:
+                "nhumwbc",
+
+            storageBucket:
+                "nhumwbc.firebasestorage.app",
+
+            messagingSenderId:
+                "191508777501",
+
+            appId:
+                "1:191508777501:web:af7b9a43542654921954f4",
+
+            measurementId:
+                "G-EE2J8CPS0H"
+
+        };
+
+
+
+        /* =================================================
+           Firebase 初始化
+        ================================================= */
+
+        const app =
+            initializeApp(
+                firebaseConfig
+            );
+
+
+        const auth =
+            getAuth(app);
+
+
+
+        /* =================================================
+           DOM 元素
+        ================================================= */
+
+        const loginForm =
+            document.getElementById(
+                "loginForm"
+            );
+
+
+        const emailInput =
+            document.getElementById(
+                "email"
+            );
+
+
+        const passwordInput =
+            document.getElementById(
+                "password"
+            );
+
+
+        const loginButton =
+            document.getElementById(
+                "loginButton"
+            );
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+
+        /* =================================================
+           已登入時直接進入後台
+        ================================================= */
+
+        onAuthStateChanged(
+            auth,
+            (user) => {
+
+                if (user) {
+
+                    window.location.replace(
+                        "admin.html"
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        /* =================================================
+           登入
+        ================================================= */
+
+        loginForm.addEventListener(
+            "submit",
+            async (event) => {
+
+                /*
+                    阻止表單重新整理頁面
+                */
+
+                event.preventDefault();
+
+
+
+                /* -------------------------
+                   取得帳號密碼
+                ------------------------- */
+
+                const email =
+                    emailInput.value.trim();
+
+
+                const password =
+                    passwordInput.value;
+
+
+
+                /* -------------------------
+                   基本檢查
+                ------------------------- */
+
+                if (!email) {
+
+                    showMessage(
+                        "請輸入 Email"
+                    );
+
+
+                    emailInput.focus();
+
+                    return;
+
+                }
+
+
+                if (!password) {
+
+                    showMessage(
+                        "請輸入密碼"
+                    );
+
+
+                    passwordInput.focus();
+
+                    return;
+
+                }
+
+
+
+                /* -------------------------
+                   登入中狀態
+                ------------------------- */
+
+                const originalText =
+                    loginButton.textContent;
+
+
+                loginButton.disabled =
+                    true;
+
+
+                loginButton.textContent =
+                    "登入中...";
+
+
+                showMessage(
+                    ""
+                );
+
+
+
+                try {
+
+                    /*
+                        Firebase Email / Password 登入
+                    */
+
+                    const credential =
+                        await signInWithEmailAndPassword(
+                            auth,
+                            email,
+                            password
+                        );
+
+
+                    console.log(
+                        "✅ 登入成功：",
+                        credential.user.email
+                    );
+
+
+                    showMessage(
+                        "登入成功，正在進入後台..."
+                    );
+
+
+                    /*
+                        登入成功後前往儀表板
+                    */
+
+                    window.location.replace(
+                        "admin.html"
+                    );
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "❌ 登入失敗：",
+                        error
+                    );
+
+
+                    showMessage(
+                        getLoginErrorMessage(
+                            error.code
+                        )
+                    );
+
+                }
+                finally {
+
+                    loginButton.disabled =
+                        false;
+
+
+                    loginButton.textContent =
+                        originalText;
+
+                }
+
+            }
+        );
+
+
+
+        /* =================================================
+           顯示訊息
+        ================================================= */
+
+        function showMessage(text) {
+
+            if (!message) {
+
+                return;
+
+            }
+
+
+            message.textContent =
+                text;
+
+        }
+
+
+
+        /* =================================================
+           Firebase 登入錯誤轉中文
+        ================================================= */
+
+        function getLoginErrorMessage(
+            errorCode
+        ) {
+
+            switch (
+                errorCode
+            ) {
+
+                case "auth/invalid-email":
+
+                    return "Email 格式不正確";
+
+
+                case "auth/invalid-credential":
+
+                    return "Email 或密碼錯誤";
+
+
+                case "auth/user-disabled":
+
+                    return "此帳號已被停用";
+
+
+                case "auth/too-many-requests":
+
+                    return "登入失敗次數過多，請稍後再試";
+
+
+                case "auth/network-request-failed":
+
+                    return "網路連線失敗，請檢查網路";
+
+
+                default:
+
+                    return "登入失敗，請確認 Email 與密碼";
+
+            }
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
